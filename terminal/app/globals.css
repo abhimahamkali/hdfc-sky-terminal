@@ -160,15 +160,10 @@
   position: fixed;
   right: 24px;
   bottom: 24px;
-  z-index: 9999;
+  z-index: 10000;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  pointer-events: none;
-}
-
-.right-fab-stack .theme-fab {
-  pointer-events: auto;
 }
 
 .theme-fab {

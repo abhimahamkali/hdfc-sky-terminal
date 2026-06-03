@@ -11,7 +11,7 @@ export function ThemeQuickToggleFab() {
     <button
       type="button"
       onClick={toggle}
-      className="theme-fab theme-fab--accent"
+      className="theme-fab"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       title={isDark ? "Light mode" : "Dark mode"}
     >

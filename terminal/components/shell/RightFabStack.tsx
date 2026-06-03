@@ -1,24 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { ThemeQuickToggleFab } from "@/components/shell/ThemeQuickToggleFab";
-import { ThemeToggleFab } from "@/components/shell/ThemeToggleFab";
 
+/** Fixed quick actions — rendered in-tree (no portal) so the FAB always paints. */
 export function RightFabStack() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
-  return createPortal(
+  return (
     <div className="right-fab-stack" aria-label="Quick actions">
       <ThemeQuickToggleFab />
-      <ThemeToggleFab />
-    </div>,
-    document.body,
+    </div>
   );
 }
