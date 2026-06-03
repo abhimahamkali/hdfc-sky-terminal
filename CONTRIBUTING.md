@@ -11,17 +11,43 @@ How we work on this project together. Read once before your first change.
 
 ---
 
-## One-time setup
+## Prerequisites (install once)
+
+You only need four things. Any operating system works — the commands are identical on
+Windows, Mac, and Linux.
+
+| Tool | Required? | Get it |
+|---|---|---|
+| **Git** | ✅ required | https://git-scm.com/downloads |
+| **Node.js** (LTS, ≥ 20) | ✅ required | https://nodejs.org |
+| **A code editor** | ✅ required | VS Code (https://code.visualstudio.com), Cursor, or any |
+| **A terminal** | ✅ required | Already built in — PowerShell (Windows), Terminal (Mac), bash (Linux) |
+| **GitHub account** | ✅ required | https://github.com — send your username to the owner for push access |
+| Claude Code / Cursor | ⚪ optional | Speed boosters that auto-load this repo's rules. Not needed to contribute. |
+
+> You do **not** need Claude, Cursor, or any AI tool to work on this project. They just
+> make it faster. Plain VS Code is perfectly fine.
+
+Check Git and Node are installed:
+```bash
+git --version     # any recent version
+node --version    # should print v20.x or higher
+```
+
+## First-run setup
 
 ```bash
 git clone https://github.com/abhimahamkali/hdfc-sky-terminal.git
 cd hdfc-sky-terminal/terminal     # NOTE: the app lives in the terminal/ subfolder
-npm install
+npm install                       # installs dependencies (first time only)
 npm run dev                       # open http://localhost:3000
 ```
 
-Requirements: Node.js ≥ 20 (24 recommended), Git. Optional: Cursor and/or Claude Code —
-both auto-load the rules in `.cursor/rules/` and `.skills/`, so you don't configure anything.
+If `npm run dev` shows the terminal UI at http://localhost:3000, you're ready.
+
+> Optional: if you use **Cursor** or **Claude Code**, they auto-load the rules in
+> `.cursor/rules/` and `.skills/` — no configuration needed. Other editors: just read
+> `.skills/widget-spec.md` and this file before building.
 
 > Run all `npm` commands from `terminal/`, **not** the repo root. The repo root holds docs +
 > the design system; the Next.js app is in `terminal/`.
