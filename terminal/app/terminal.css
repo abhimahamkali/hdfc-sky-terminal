@@ -90,13 +90,39 @@
 .top-bar__tickers {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+  position: relative;
+}
+
+.top-bar__live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg-3);
+  flex-shrink: 0;
+}
+
+.top-bar__live-dot--on {
+  background: var(--profit);
+}
+
+.top-bar__live-dot--pulse {
+  animation: ticker-pulse 0.6s ease;
+}
+
+@keyframes ticker-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(3, 152, 85, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 6px rgba(3, 152, 85, 0);
+  }
 }
 
 .top-bar__ticker-scroll {

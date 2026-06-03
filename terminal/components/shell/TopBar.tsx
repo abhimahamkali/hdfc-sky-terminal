@@ -2,22 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { useUiShell } from "@/lib/ui-shell";
-
-type Ticker = {
-  name: string;
-  value: string;
-  delta: string;
-  dir: "up" | "down";
-  tag?: string;
-};
-
-const TICKERS: Ticker[] = [
-  { name: "Nifty 50", value: "25,829.55", delta: "-30.55 (-0.12%)", dir: "down", tag: "EXPIRY TODAY" },
-  { name: "SENSEX", value: "84,475.53", delta: "-204.33 (-0.24%)", dir: "down" },
-  { name: "Nifty Bank", value: "58,971.20", delta: "+186.05 (+0.31%)", dir: "up" },
-  { name: "Fin Nifty", value: "26,402.10", delta: "+52.10 (+0.20%)", dir: "up" },
-  { name: "Nifty Midcap", value: "60,118.40", delta: "-14.92 (-0.02%)", dir: "down" },
-];
+import { useIndexTickers } from "@/lib/use-index-tickers";
+import type { TickerQuote } from "@/lib/ticker-types";
 
 const TRADE_OPTIONS = ["Trade", "Equity", "F&O", "Commodities", "Currency"];
 
@@ -42,7 +28,10 @@ export function TopBar({
   const tradeRef = useRef<HTMLDivElement>(null);
   const displayTickers = showTickers;
   const compactOnly = showCompactTickers && !showTickers;
-  const tickersToShow = compactOnly ? TICKERS.slice(0, 1) : TICKERS;
+  const { tickers, source, isRefreshing } = useIndexTickers(
+    displayTickers || compactOnly,
+  );
+  const tickersToShow = compactOnly ? tickers.slice(0, 1) : tickers;
 
   useEffect(() => {
     if (!tradeOpen) return;
@@ -117,10 +106,24 @@ export function TopBar({
       </div>
 
       {(displayTickers || compactOnly) && (
-        <div className="top-bar__tickers">
+        <div
+          className="top-bar__tickers"
+          aria-live="polite"
+          aria-busy={isRefreshing}
+          data-ticker-source={source}
+        >
+          <span
+            className={`top-bar__live-dot${source === "live" ? " top-bar__live-dot--on" : ""}${isRefreshing ? " top-bar__live-dot--pulse" : ""}`}
+            title={
+              source === "live"
+                ? "Live index quotes · refreshes every 5s"
+                : "Using cached quotes · retrying"
+            }
+            aria-hidden
+          />
           <div className="top-bar__ticker-scroll">
             {tickersToShow.map((t, i) => (
-              <div key={t.name} style={{ display: "flex", alignItems: "center", gap: 20 }}>
+              <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 20 }}>
                 <button
                   type="button"
                   onClick={() => showToast(`${t.name}: ${t.value} ${t.delta}`)}
@@ -224,7 +227,7 @@ function Ticker({
   dir,
   tag,
   compact,
-}: Ticker & { compact?: boolean }) {
+}: TickerQuote & { compact?: boolean }) {
   const cls = dir === "up" ? "num--profit" : "num--loss";
   return (
     <div

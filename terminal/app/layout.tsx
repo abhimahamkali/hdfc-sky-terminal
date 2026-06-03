@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./terminal.css";
+import "./option-chain.css";
 import "./add-widgets.css";
 import "./preferences.css";
 import "./global-search.css";

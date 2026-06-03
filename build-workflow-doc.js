@@ -110,6 +110,9 @@ children.push(body([new TextRun({ text: "Tip: ", font: "Calibri", size: 22, bold
 // 2
 children.push(h1("2.  Start a piece of work (your own branch)"));
 children.push(body([text("Never edit "), new TextRun({ text: "main", font: "Consolas", size: 20, color: "1B1E48" }), text(" directly. Make your own branch so your work cannot collide with others.")]));
+children.push(body([new TextRun({ text: "Easy way (owner): ", font: "Calibri", size: 22, bold: true, color: INK }), text("run the branch command — it asks for a name and creates the branch for you:")]));
+children.push(...code([".\\branch"]));
+children.push(body([new TextRun({ text: "Manual way (and for colleagues):", font: "Calibri", size: 22, bold: true, color: INK })], { spacing: { before: 80, after: 60 } }));
 children.push(...code([
   "git checkout main",
   "git pull                          # get everyone's latest",

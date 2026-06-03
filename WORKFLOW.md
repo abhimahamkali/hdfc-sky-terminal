@@ -48,6 +48,13 @@ Open **http://localhost:3000** — you should see the terminal. Leave `npm run d
 ## 2. Start a piece of work (your own branch)
 
 Never edit `main` directly. Make your own branch so your work can't collide with others'.
+
+**Easy way (owner):** run the `branch` command — it asks for a name and creates the branch for you:
+```powershell
+.\branch
+```
+
+**Manual way (and for colleagues):**
 ```bash
 git checkout main
 git pull                          # get everyone's latest

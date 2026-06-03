@@ -37,40 +37,20 @@ export function OptionChain() {
   }, [openMenu]);
 
   return (
-    <div
-      className="sky-card"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        padding: 16,
-        gap: 12,
-        height: "100%",
-        overflow: "hidden",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span
-          style={{
-            fontSize: 14,
-            fontWeight: 500,
-            color: "var(--accent)",
-            borderBottom: "2px solid var(--accent)",
-            paddingBottom: 4,
-          }}
-        >
-          Option Chain
-        </span>
+    <div className="sky-card option-chain">
+      <div className="option-chain__header">
+        <span className="option-chain__title">Option Chain</span>
         <button
           type="button"
+          className="option-chain__icon-btn"
           onClick={() => showToast("Option Chain — expanded view")}
-          style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--fg-1)" }}
           aria-label="Expand"
         >
           <ExpandGlyph />
         </button>
       </div>
 
-      <div ref={menuRef} style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
+      <div ref={menuRef} className="option-chain__controls">
         <Dropdown
           label={priceLabel}
           open={openMenu === "price"}
@@ -83,6 +63,7 @@ export function OptionChain() {
           }}
         />
         <Dropdown
+          className="option-chain__dropdown--date"
           label={dateLabel}
           open={openMenu === "date"}
           onToggle={() => setOpenMenu(openMenu === "date" ? null : "date")}
@@ -95,7 +76,7 @@ export function OptionChain() {
         />
         <button
           type="button"
-          style={iconBoxBtn}
+          className="option-chain__icon-btn"
           aria-label="Filter"
           onClick={() => showToast("Option chain filters")}
         >
@@ -103,7 +84,7 @@ export function OptionChain() {
         </button>
         <button
           type="button"
-          style={iconBoxBtn}
+          className="option-chain__icon-btn"
           aria-label="Info"
           onClick={() => showToast("PCR = Put-Call Ratio · ITM zones highlighted")}
         >
@@ -111,65 +92,33 @@ export function OptionChain() {
         </button>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          fontSize: 11,
-          fontWeight: 600,
-          color: "var(--fg-2)",
-          textAlign: "center",
-        }}
-      >
-        <span>
-          <span style={{ marginRight: 4 }}>LTP</span>
-          <span style={{ color: "var(--accent)", fontWeight: 700, fontSize: 12 }}>CALL</span>
-        </span>
-        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+      <div className="option-chain__col-headers">
+        <div className="option-chain__col-header option-chain__col-header--call">
+          LTP <strong>CALL</strong>
+        </div>
+        <div className="option-chain__col-header option-chain__col-header--strike">
           <SearchGlyph />
-          <span style={{ fontWeight: 700, fontSize: 12, color: "var(--fg-1)" }}>STRIKE</span>
-        </span>
-        <span>
-          <span style={{ color: "var(--accent)", fontWeight: 700, fontSize: 12 }}>PUT</span>
-          <span style={{ marginLeft: 4 }}>LTP</span>
-        </span>
+          STRIKE
+        </div>
+        <div className="option-chain__col-header option-chain__col-header--put">
+          <strong>PUT</strong> LTP
+        </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 4 }}>
+      <div className="option-chain__rows">
         {STRIKES.map((s, i) => (
           <div key={i}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+            <div className="option-chain__row">
               <Cell side="call" v1={s.call} v2={s.call2} />
-              <Cell side="strike" v1={s.strike} v2={`PCR : ${s.pcr}`} />
+              <Cell side="strike" v1={s.strike} v2={`PCR ${s.pcr}`} />
               <Cell side="put" v1={s.put} v2={s.put2} />
             </div>
             {i === LONG_BUILDUP_INDEX && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  padding: "6px 0",
-                }}
-              >
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    color: "var(--profit)",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.4,
-                  }}
-                >
+              <div className="option-chain__buildup">
+                <span className="option-chain__buildup-label">
                   <InfoCircleGlyph /> LONG BUILDUP
                 </span>
-                <span className="num" style={{ fontSize: 12, color: "var(--fg-1)" }}>
-                  1,274.75
-                </span>
+                <span className="option-chain__buildup-value">1,274.75</span>
               </div>
             )}
           </div>
@@ -194,69 +143,36 @@ function Dropdown({
   onToggle,
   options,
   onSelect,
+  className = "",
 }: {
   label: string;
   open: boolean;
   onToggle: () => void;
   options: string[];
   onSelect: (v: string) => void;
+  className?: string;
 }) {
   return (
-    <div style={{ flex: 1, position: "relative" }}>
+    <div className={`option-chain__dropdown ${className}`.trim()}>
       <button
         type="button"
+        className="option-chain__dropdown-btn"
         aria-expanded={open}
         onClick={onToggle}
-        style={{
-          width: "100%",
-          height: 36,
-          padding: "8px 12px",
-          borderRadius: 6,
-          border: `1px solid ${open ? "var(--accent)" : "var(--border-1)"}`,
-          background: open ? "var(--accent-soft)" : "transparent",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          fontSize: 12,
-          color: "var(--fg-1)",
-        }}
       >
-        {label} <Chevron />
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {label}
+        </span>
+        <Chevron />
       </button>
       {open && (
-        <ul
-          style={{
-            position: "absolute",
-            top: "calc(100% + 4px)",
-            left: 0,
-            right: 0,
-            margin: 0,
-            padding: 4,
-            listStyle: "none",
-            background: "var(--bg-card)",
-            border: "1px solid var(--border-1)",
-            borderRadius: 8,
-            boxShadow: "0 8px 16px rgba(0,27,51,0.1)",
-            zIndex: 20,
-          }}
-        >
+        <ul className="option-chain__dropdown-menu">
           {options.map((opt) => (
             <li key={opt}>
               <button
                 type="button"
+                className={`option-chain__dropdown-item${label === opt ? " option-chain__dropdown-item--active" : ""}`}
                 onClick={() => onSelect(opt)}
-                style={{
-                  width: "100%",
-                  padding: "8px 10px",
-                  border: "none",
-                  borderRadius: 4,
-                  background: label === opt ? "var(--accent-soft)" : "transparent",
-                  color: label === opt ? "var(--accent)" : "var(--fg-1)",
-                  fontSize: 12,
-                  textAlign: "left",
-                  cursor: "pointer",
-                }}
               >
                 {opt}
               </button>
@@ -267,19 +183,6 @@ function Dropdown({
     </div>
   );
 }
-
-const iconBoxBtn: React.CSSProperties = {
-  width: 36,
-  height: 36,
-  borderRadius: 6,
-  border: "1px solid var(--border-1)",
-  background: "transparent",
-  cursor: "pointer",
-  color: "var(--fg-1)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
 
 function ExpandGlyph() {
   return (
