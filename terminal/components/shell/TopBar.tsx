@@ -28,10 +28,19 @@ export function TopBar({
   const tradeRef = useRef<HTMLDivElement>(null);
   const displayTickers = showTickers;
   const compactOnly = showCompactTickers && !showTickers;
-  const { tickers, source, isRefreshing } = useIndexTickers(
+  const { tickers, source, isRefreshing, updatedAt, flashIds } = useIndexTickers(
     displayTickers || compactOnly,
   );
   const tickersToShow = compactOnly ? tickers.slice(0, 1) : tickers;
+  const updatedLabel = updatedAt
+    ? new Date(updatedAt).toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZone: "Asia/Kolkata",
+      })
+    : null;
 
   useEffect(() => {
     if (!tradeOpen) return;
@@ -116,17 +125,23 @@ export function TopBar({
             className={`top-bar__live-dot${source === "live" ? " top-bar__live-dot--on" : ""}${isRefreshing ? " top-bar__live-dot--pulse" : ""}`}
             title={
               source === "live"
-                ? "Live index quotes · refreshes every 5s"
-                : "Using cached quotes · retrying"
+                ? `Live · refreshes every 5s${updatedLabel ? ` · last ${updatedLabel} IST` : ""}`
+                : "Using fallback quotes · retrying every 5s"
             }
             aria-hidden
           />
+          {updatedLabel && (
+            <span className="top-bar__updated" title="Last successful refresh (IST)">
+              {updatedLabel}
+            </span>
+          )}
           <div className="top-bar__ticker-scroll">
             {tickersToShow.map((t, i) => (
               <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 20 }}>
                 <button
                   type="button"
                   onClick={() => showToast(`${t.name}: ${t.value} ${t.delta}`)}
+                  className={flashIds.has(t.id) ? "top-bar__ticker-hit" : undefined}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -138,7 +153,7 @@ export function TopBar({
                     minHeight: 44,
                   }}
                 >
-                  <Ticker {...t} compact={compactOnly} />
+                  <Ticker {...t} compact={compactOnly} priceFlash={flashIds.has(t.id)} />
                 </button>
                 {!compactOnly && i < tickersToShow.length - 1 && (
                   <div style={{ width: 1, height: 18, background: "var(--border-1)", flexShrink: 0 }} />
@@ -227,7 +242,8 @@ function Ticker({
   dir,
   tag,
   compact,
-}: TickerQuote & { compact?: boolean }) {
+  priceFlash,
+}: TickerQuote & { compact?: boolean; priceFlash?: boolean }) {
   const cls = dir === "up" ? "num--profit" : "num--loss";
   return (
     <div
@@ -241,7 +257,10 @@ function Ticker({
       }}
     >
       <span style={{ fontWeight: 500, color: "var(--fg-1)" }}>{name}</span>
-      <span className="num" style={{ fontWeight: 600 }}>
+      <span
+        className={`num top-bar__ticker-price${priceFlash ? " top-bar__ticker-price--flash" : ""}`}
+        style={{ fontWeight: 600 }}
+      >
         {value}
       </span>
       <Arrow dir={dir} />

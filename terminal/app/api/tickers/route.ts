@@ -8,45 +8,30 @@ import { FALLBACK_TICKERS } from "@/lib/ticker-fallback";
 import { INDEX_SYMBOLS } from "@/lib/ticker-symbols";
 import type { TickerQuote } from "@/lib/ticker-types";
 
-type YahooChartResponse = {
-  chart?: {
-    result?: Array<{
-      meta?: {
-        regularMarketPrice?: number;
-        chartPreviousClose?: number;
-        previousClose?: number;
-        regularMarketChange?: number;
-        regularMarketChangePercent?: number;
-      };
-    }>;
+type YahooQuoteResult = {
+  symbol?: string;
+  regularMarketPrice?: number;
+  regularMarketChange?: number;
+  regularMarketChangePercent?: number;
+  regularMarketPreviousClose?: number;
+};
+
+type YahooQuoteResponse = {
+  quoteResponse?: {
+    result?: YahooQuoteResult[];
   };
 };
 
-async function fetchYahooQuote(
+function parseQuote(
   config: (typeof INDEX_SYMBOLS)[number],
-): Promise<TickerQuote | null> {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(config.yahooSymbol)}?interval=1d&range=1d`;
+  row: YahooQuoteResult | undefined,
+): TickerQuote | null {
+  if (!row?.regularMarketPrice) return null;
 
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (compatible; HDFCSkyTerminal/1.0; +https://localhost)",
-      Accept: "application/json",
-    },
-    cache: "no-store",
-  });
-
-  if (!res.ok) return null;
-
-  const data = (await res.json()) as YahooChartResponse;
-  const meta = data.chart?.result?.[0]?.meta;
-  if (!meta?.regularMarketPrice) return null;
-
-  const price = meta.regularMarketPrice;
-  const prev =
-    meta.chartPreviousClose ?? meta.previousClose ?? price;
-  let change = meta.regularMarketChange;
-  let changePct = meta.regularMarketChangePercent;
+  const price = row.regularMarketPrice;
+  const prev = row.regularMarketPreviousClose ?? price;
+  let change = row.regularMarketChange;
+  let changePct = row.regularMarketChangePercent;
 
   if (change === undefined || changePct === undefined) {
     change = price - prev;
@@ -72,29 +57,70 @@ async function fetchYahooQuote(
   };
 }
 
-export async function GET() {
-  const results = await Promise.all(
-    INDEX_SYMBOLS.map((config) => fetchYahooQuote(config)),
-  );
+async function fetchYahooQuotesBatch(): Promise<Map<string, TickerQuote>> {
+  const symbols = INDEX_SYMBOLS.map((s) => s.yahooSymbol).join(",");
+  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols)}`;
 
-  const live = results.filter((q): q is TickerQuote => q !== null);
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (compatible; HDFCSkyTerminal/1.0; +https://localhost)",
+      Accept: "application/json",
+    },
+    cache: "no-store",
+  });
 
-  if (live.length === 0) {
-    return NextResponse.json({
-      tickers: FALLBACK_TICKERS,
-      updatedAt: Date.now(),
-      source: "fallback",
-    });
+  if (!res.ok) return new Map();
+
+  const data = (await res.json()) as YahooQuoteResponse;
+  const rows = data.quoteResponse?.result ?? [];
+  const bySymbol = new Map(rows.map((r) => [r.symbol, r]));
+  const out = new Map<string, TickerQuote>();
+
+  for (const config of INDEX_SYMBOLS) {
+    const row =
+      bySymbol.get(config.yahooSymbol) ??
+      rows.find((r) => r.symbol === config.yahooSymbol);
+    const quote = parseQuote(config, row);
+    if (quote) out.set(config.id, quote);
   }
 
-  const byId = new Map(live.map((t) => [t.id, t]));
+  return out;
+}
+
+export async function GET() {
+  const liveMap = await fetchYahooQuotesBatch();
+  const live = [...liveMap.values()];
+
+  if (live.length === 0) {
+    return NextResponse.json(
+      {
+        tickers: FALLBACK_TICKERS,
+        updatedAt: Date.now(),
+        source: "fallback",
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      },
+    );
+  }
+
   const tickers = INDEX_SYMBOLS.map(
-    (s) => byId.get(s.id) ?? FALLBACK_TICKERS.find((f) => f.id === s.id)!,
+    (s) => liveMap.get(s.id) ?? FALLBACK_TICKERS.find((f) => f.id === s.id)!,
   );
 
-  return NextResponse.json({
-    tickers,
-    updatedAt: Date.now(),
-    source: live.length === INDEX_SYMBOLS.length ? "live" : "fallback",
-  });
+  return NextResponse.json(
+    {
+      tickers,
+      updatedAt: Date.now(),
+      source: live.length === INDEX_SYMBOLS.length ? "live" : "fallback",
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+      },
+    },
+  );
 }

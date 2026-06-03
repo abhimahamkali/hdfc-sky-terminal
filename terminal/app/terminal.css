@@ -125,11 +125,36 @@
   }
 }
 
+.top-bar__updated {
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fg-3);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  min-width: 52px;
+}
+
 .top-bar__ticker-scroll {
   display: flex;
   align-items: center;
   gap: 20px;
   padding-bottom: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.top-bar__ticker-price--flash {
+  animation: ticker-price-flash 0.7s ease;
+}
+
+@keyframes ticker-price-flash {
+  0% {
+    color: var(--accent);
+  }
+  100% {
+    color: inherit;
+  }
 }
 
 .top-bar__actions {
