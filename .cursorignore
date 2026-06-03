@@ -1,0 +1,20 @@
+# Keep Cursor's index lean — exclude generated, vendored, and large binary files.
+
+# dependencies & build output
+**/node_modules/
+**/.next/
+**/out/
+**/build/
+
+# design system handoff: large, vendored, not edited by hand.
+# (The DS is the source of truth but Cursor doesn't need it in the index —
+#  globals.css already mirrors the tokens. Un-ignore if you need to diff tokens.)
+design-system/
+ds-handoff.tar.gz
+
+# fonts & generated assets
+terminal/public/fonts/
+
+# logs & misc
+*.log
+*.tsbuildinfo

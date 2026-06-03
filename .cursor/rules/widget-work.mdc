@@ -1,0 +1,20 @@
+---
+description: Contract enforced when touching any widget or screen code.
+globs: terminal/components/widgets/**,terminal/widgets/**,terminal/screens/**,terminal/components/shell/**
+---
+
+# Widget / screen work — contract
+
+Before editing here, read @../../.skills/widget-spec.md (build/modify) and
+@../../.skills/add-widget.md (composition changes).
+
+- Every widget is self-contained in its own folder: `index.tsx` + `meta.ts` +
+  `types.ts` (+ `hooks.ts` for mock data, sub-components as needed).
+- New widget = register it in `widgets/_registry.ts` (one line) AND add a preview
+  route at `app/preview/<id>/page.tsx`.
+- Add a widget to a screen = append a layout cell in `screens/_registry.ts`; pick
+  x/y from empty space, default w/h from the widget's meta. Never hand-edit page.tsx.
+- Keep `className="num"` on every numeric. Tokens only, no hex. Indian number format.
+- Quality bar before "done": side-by-side screenshot matches Figma within ~2px on key
+  elements; resizes cleanly min→default→2×; theme toggle leaves no color leaks;
+  TypeScript clean, no `any`.

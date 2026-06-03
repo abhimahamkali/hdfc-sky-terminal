@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>HDFC SKY — Terminal UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css" />
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg-app);
+    color: var(--fg-1);
+    overflow: hidden;
+    transition: background 200ms ease, color 200ms ease;
+  }
+  #root { width: 100%; height: 100%; }
+  /* Scrollbars — slim, terminal-style */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,27,51,0.18); border-radius: 4px; }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="tokens.js"></script>
+<script type="text/babel" src="TopBar.jsx"></script>
+<script type="text/babel" src="WatchList.jsx"></script>
+<script type="text/babel" src="ChartPanel.jsx"></script>
+<script type="text/babel" src="OptionChain.jsx"></script>
+<script type="text/babel" src="PositionsTable.jsx"></script>
+<script type="text/babel" src="AddWidgetsModal.jsx"></script>
+
+<script type="text/babel">
+function App() {
+  const [theme, setTheme] = React.useState(
+    localStorage.getItem('sky-theme') || 'light'
+  );
+  const [tab, setTab] = React.useState(1);
+  const [query, setQuery] = React.useState('');
+  const [chartTab, setChartTab] = React.useState('Charts');
+  const [posTab, setPosTab] = React.useState('Positions');
+  const [showWidgets, setShowWidgets] = React.useState(false);
+  const [widgetView, setWidgetView] = React.useState('grid');
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('sky-theme', theme);
+  }, [theme]);
+
+  const scrips = [
+    { name: 'MRF',          exch: 'NSE', vol: '28.9L', ltp: '1,44,000.00', pnl: '24,000.00 (20.00%)',   dir: 'up'   },
+    { name: 'ICICIBANK',    exch: 'NSE', vol: '28.9L', ltp: '1,20,000',    pnl: '-24,000.00 (-20.00%)', dir: 'down' },
+    { name: 'VODAFONE IDEA',exch: 'NSE', vol: '28.9L', ltp: '14.00',       pnl: '1.00 (5.50%)',         dir: 'up'   },
+    { name: 'ICICIBANK',    exch: 'NSE', vol: '28.9L', ltp: '1,20,000',    pnl: '-24,000.00 (-20.00%)', dir: 'down' },
+    { name: 'ICICIBANK',    exch: 'NSE', vol: '28.9L', ltp: '1,20,000',    pnl: '-24,000.00 (-20.00%)', dir: 'down' },
+    { name: 'TCS',          exch: 'NSE', vol: '12.4L', ltp: '4,210.55',    pnl: '32.50 (0.78%)',        dir: 'up'   },
+    { name: 'RELIANCE',     exch: 'NSE', vol: '54.1L', ltp: '2,890.20',    pnl: '-18.40 (-0.63%)',      dir: 'down' },
+  ];
+
+  return (
+    <div style={{
+      width: '100%', height: '100%',
+      padding: 10, boxSizing: 'border-box',
+      display: 'grid',
+      gridTemplateRows: '68px 1fr 320px',
+      gridTemplateColumns: '320px 1fr 360px',
+      gap: 8,
+      gridTemplateAreas: `
+        "topbar topbar topbar"
+        "watch  chart  option"
+        "positions positions option"
+      `,
+      position: 'relative',
+    }}>
+      <div style={{ gridArea: 'topbar', minWidth: 0 }}>
+        <TopBar
+          theme={theme}
+          onToggleTheme={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
+        />
+        {/* Hook the + Widgets button via DOM-level handler on the actual element
+            isn't needed — we wire through a quick override below */}
+      </div>
+      <div style={{ gridArea: 'watch', minWidth: 0, minHeight: 0 }}>
+        <WatchList theme={theme} scrips={scrips}
+          activeTab={tab} onTabChange={setTab}
+          query={query} onQuery={setQuery} />
+      </div>
+      <div style={{ gridArea: 'chart', minWidth: 0, minHeight: 0 }}>
+        <ChartPanel theme={theme} activeTab={chartTab} onTabChange={setChartTab} />
+      </div>
+      <div style={{ gridArea: 'option', minWidth: 0, minHeight: 0 }}>
+        <OptionChain theme={theme} />
+      </div>
+      <div style={{ gridArea: 'positions', minWidth: 0, minHeight: 0 }}>
+        <PositionsTable theme={theme} activeTab={posTab} onTabChange={setPosTab} />
+      </div>
+
+      <AddWidgetsModal
+        theme={theme} open={showWidgets} view={widgetView}
+        onView={setWidgetView}
+        onClose={() => setShowWidgets(false)}
+      />
+
+      {/* Floating control row — demo-only chrome.
+          Lets the visitor open the modal and switch view. Lives outside the
+          terminal cards so it doesn't pollute the surface. */}
+      <div style={{
+        position: 'fixed', top: 18, right: 22, zIndex: 100,
+        display: 'flex', gap: 8, alignItems: 'center',
+      }}>
+        <button onClick={() => setShowWidgets(s => !s)} style={{
+          padding: '8px 14px', borderRadius: 8,
+          background: window.SKY.colors.blue500, color: '#fff',
+          border: 'none', cursor: 'pointer',
+          fontFamily: window.SKY.font.ui, fontSize: 13, fontWeight: 500,
+          boxShadow: '0 4px 12px rgba(40,80,231,0.30)',
+        }}>{showWidgets ? 'Close' : '+ Widgets (demo)'}</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

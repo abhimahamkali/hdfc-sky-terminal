@@ -1,0 +1,40 @@
+# dependencies
+**/node_modules/
+.pnp
+.pnp.*
+
+# next.js
+**/.next/
+**/out/
+**/build/
+
+# design-system handoff archive (large, re-extractable)
+ds-handoff.tar.gz
+
+# testing
+**/coverage/
+
+# misc
+.DS_Store
+*.pem
+Thumbs.db
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# editor
+*.swp
+*.swo

@@ -1,0 +1,287 @@
+/* Add Widgets modal — matches Figma Terminal_testing */
+
+.add-widgets-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--modal-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.add-widgets-dialog {
+  width: min(920px, 100%);
+  max-height: min(88vh, 520px);
+  background: var(--bg-card);
+  border: 1px solid var(--border-1);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.add-widgets-dialog--list {
+  width: min(960px, 100%);
+  max-height: min(88vh, 420px);
+}
+
+.add-widgets-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-1);
+  flex-shrink: 0;
+}
+
+.add-widgets-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg-1);
+  white-space: nowrap;
+}
+
+.add-widgets-tickers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg-1);
+  white-space: nowrap;
+}
+
+.add-widgets-tickers-switch {
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  background: var(--border-1);
+  display: flex;
+  align-items: center;
+  transition: background 150ms ease;
+}
+
+.add-widgets-tickers-switch[data-on="true"] {
+  background: var(--accent);
+}
+
+.add-widgets-tickers-knob {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 150ms ease;
+}
+
+.add-widgets-tickers-switch[data-on="true"] .add-widgets-tickers-knob {
+  transform: translateX(18px);
+}
+
+.add-widgets-search-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 200px;
+  max-width: 320px;
+  margin-left: auto;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-1);
+  background: var(--bg-card);
+}
+
+.add-widgets-search-wrap input {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  font-size: 13px;
+  color: var(--fg-1);
+}
+
+.add-widgets-search-wrap input::placeholder {
+  color: var(--fg-3);
+}
+
+.add-widgets-view-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border-1);
+  background: transparent;
+  color: var(--fg-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.add-widgets-view-toggle[data-active="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+.add-widgets-body {
+  flex: 1;
+  overflow: auto;
+  padding: 20px 24px 24px;
+}
+
+/* Grid view */
+.add-widgets-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px 20px;
+}
+
+.add-widgets-grid-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: center;
+}
+
+.add-widgets-grid-card:hover .widget-preview-thumb {
+  border-color: var(--accent);
+}
+
+.widget-preview-thumb {
+  border-radius: 8px;
+  border: 1px solid var(--border-1);
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--preview-thumb-bg);
+  transition: border-color 120ms ease;
+}
+
+.add-widgets-grid-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--fg-1);
+  text-transform: uppercase;
+}
+
+/* List view */
+.add-widgets-list-layout {
+  display: flex;
+  gap: 24px;
+  min-height: 260px;
+}
+
+.add-widgets-columns {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.add-widgets-category-title {
+  margin: 0 0 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--fg-3);
+}
+
+.add-widgets-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.add-widgets-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg-1);
+  transition: background 120ms ease;
+}
+
+.add-widgets-list-item:hover,
+.add-widgets-list-item[data-selected="true"] {
+  background: var(--accent-soft);
+}
+
+.add-widgets-list-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid var(--border-1);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-2);
+}
+
+.add-widgets-preview-panel {
+  width: 200px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-1);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-card);
+}
+
+.add-widgets-preview-panel .widget-preview-thumb {
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+}
+
+.add-widgets-preview-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-widgets-preview-footer .add-widgets-list-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.add-widgets-preview-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--fg-1);
+  text-transform: uppercase;
+}
+
+.add-widgets-empty {
+  text-align: center;
+  color: var(--fg-2);
+  font-size: 14px;
+  padding: 32px;
+}

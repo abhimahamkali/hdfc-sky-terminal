@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="../colors_and_type.css"><link rel="stylesheet" href="_shared.css">
+<style>
+  .fld { display:flex;flex-direction:column;gap:4px;font-family:var(--font-ui);min-width:240px }
+  .fld label { font-size:12px;color:#68697E }
+  .fld input { padding:12px 16px;background:#fff;border:1px solid #DDE0F1;border-radius:8px;font-family:var(--font-ui);font-size:14px;color:#001B33;outline:none;transition:border-color 120ms }
+  .fld input:focus { border-color:#2850E7 }
+  .fld--error input { border-color:#F04438 }
+  .fld--error .err { font-size:12px;color:#F04438 }
+</style></head>
+<body><div class="ds-card">
+  <div class="ds-row" style="align-items:flex-start;gap:24px">
+    <div class="fld">
+      <label>Mobile number</label>
+      <input value="" placeholder="+91 · Enter 10-digit number" />
+      <span class="meta">default</span>
+    </div>
+    <div class="fld">
+      <label>Mobile number</label>
+      <input value="98765 43210" autofocus />
+      <span class="meta">focus · border = brand blue</span>
+    </div>
+    <div class="fld fld--error">
+      <label>Mobile number</label>
+      <input value="98765 4321" />
+      <span class="err">Enter a valid 10-digit number</span>
+    </div>
+  </div>
+  <div class="meta" style="margin-top:6px">Inputs · 8 px radius · 1 px border (#DDE0F1) · 12/16 padding · 120 ms border-color transition on focus.</div>
+</div></body></html>

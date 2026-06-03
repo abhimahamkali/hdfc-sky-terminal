@@ -1,0 +1,266 @@
+/* =====================================================================
+   HDFC SKY — Design System: Colors, Type & Foundations
+   Tokens transcribed from the Terminal_testing.fig file and the
+   sky-ds-poc codebase (abhimahamkali/sky-ds-poc → src/tokens).
+   Light + dark themes; trading-app data semantics built in.
+   ===================================================================== */
+
+/* ---------- Web fonts -----------------------------------------------
+   Satoshi is the marquee UI face (display, controls, body in app).
+   Inter is the tabular/numeric workhorse (prices, P&L, axis labels).
+   "Proxima Nova Alt" appears in the Figma for compact data cells —
+   it's a licensed font, so we substitute Manrope (open, similar geometry).
+
+   Inter is self-hosted from fonts/. We use Inter's optical-size
+   subfamilies: 18pt for small UI/numeric text (≤16px), 24pt for
+   body sizes (16–24px). Italic faces shipped but unused in the
+   product — kept for completeness.
+   --------------------------------------------------------------------- */
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap");
+
+/* Inter 18pt — small text / UI / numerics (≤16px) */
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100; src: url("fonts/Inter_18pt-Thin.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 200; src: url("fonts/Inter_18pt-ExtraLight.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 300; src: url("fonts/Inter_18pt-Light.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; src: url("fonts/Inter_18pt-Regular.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 500; src: url("fonts/Inter_18pt-Medium.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 600; src: url("fonts/Inter_18pt-SemiBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 700; src: url("fonts/Inter_18pt-Bold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 800; src: url("fonts/Inter_18pt-ExtraBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 900; src: url("fonts/Inter_18pt-Black.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: italic; font-weight: 400; src: url("fonts/Inter_18pt-Italic.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter"; font-style: italic; font-weight: 700; src: url("fonts/Inter_18pt-BoldItalic.ttf") format("truetype"); font-display: swap; }
+
+/* Inter 24pt — body / medium display (16–24px) */
+@font-face { font-family: "Inter Display"; font-style: normal; font-weight: 400; src: url("fonts/Inter_24pt-Regular.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display"; font-style: normal; font-weight: 500; src: url("fonts/Inter_24pt-Medium.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display"; font-style: normal; font-weight: 600; src: url("fonts/Inter_24pt-SemiBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display"; font-style: normal; font-weight: 700; src: url("fonts/Inter_24pt-Bold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display"; font-style: normal; font-weight: 800; src: url("fonts/Inter_24pt-ExtraBold.ttf") format("truetype"); font-display: swap; }
+
+/* Inter 28pt — large display (24px+) */
+@font-face { font-family: "Inter Display Lg"; font-style: normal; font-weight: 400; src: url("fonts/Inter_28pt-Regular.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display Lg"; font-style: normal; font-weight: 500; src: url("fonts/Inter_28pt-Medium.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display Lg"; font-style: normal; font-weight: 600; src: url("fonts/Inter_28pt-SemiBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display Lg"; font-style: normal; font-weight: 700; src: url("fonts/Inter_28pt-Bold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display Lg"; font-style: normal; font-weight: 800; src: url("fonts/Inter_28pt-ExtraBold.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Inter Display Lg"; font-style: normal; font-weight: 900; src: url("fonts/Inter_28pt-Black.ttf") format("truetype"); font-display: swap; }
+
+:root {
+  /* =================================================================
+     COLORS — Brand & Action
+     ================================================================= */
+  --sky-blue-50:  #F3F4FC; /* rgb(243,244,252) — surface tint */
+  --sky-blue-100: #DDE0F1; /* rgb(221,224,241) — default border / divider */
+  --sky-blue-200: #617BED; /* rgb(97,123,237)  — hover / active accent */
+  --sky-blue-500: #2850E7; /* rgb(40,80,231)   — PRIMARY brand blue */
+  --sky-blue-600: #0486FF; /* rgb(4,134,255)   — secondary link blue */
+  --sky-blue-700: #43457D; /* rgb(67,69,125)   — deep border / dark UI */
+  --sky-blue-900: #27284B; /* rgb(39,40,75)    — chip/strong border */
+
+  --sky-cyan-500: #06C7FC; /* rgb(6,199,252) — bright fill / highlight */
+
+  /* =================================================================
+     COLORS — Neutrals / Foreground (light)
+     ================================================================= */
+  --sky-ink-900:  #001B33; /* rgb(0,27,51)     — primary text on light  */
+  --sky-ink-1000: #000000; /* rgb(0,0,0)       — true black, numerics   */
+  --sky-ink-700:  #647483; /* rgb(100,116,131) — strong icon stroke     */
+  --sky-ink-600:  #68697E; /* rgb(104,105,126) — secondary text         */
+  --sky-ink-500:  #5D5E71; /* rgb(93,94,113)   — muted label            */
+  --sky-ink-400:  #9C9CAC; /* rgb(156,156,172) — tertiary text          */
+  --sky-ink-300:  #E0E6EB; /* rgb(224,230,235) — disabled text          */
+  --sky-ink-200:  #E3E4E6; /* rgb(227,228,230) — light divider          */
+
+  /* =================================================================
+     COLORS — Surfaces
+     ================================================================= */
+  --sky-surface-0:  #FFFFFF; /* card / overlay                */
+  --sky-surface-1:  #F6F6F6; /* page background (light theme) */
+  --sky-surface-2:  #F3F4FC; /* selected row / tint           */
+
+  /* Dark theme surfaces */
+  --sky-dark-bg:    #030528; /* rgb(3,5,40)     — app bg dark   */
+  --sky-dark-card:  #0A0C3A; /* derived         — card on dark  */
+  --sky-dark-border:#27284B; /* rgb(39,40,75)   — dark border   */
+
+  /* =================================================================
+     COLORS — Semantic (P&L, status — trading-critical)
+     ================================================================= */
+  --sky-profit-500: #039855; /* rgb(3,152,85)  — primary up / profit   */
+  --sky-profit-600: #068913; /* rgb(6,137,19)  — strong green tag fill */
+  --sky-profit-700: #028737; /* rgb(2,135,55)  — pressed / dark green  */
+
+  --sky-loss-500:   #F04438; /* rgb(240,68,56) — primary down / loss   */
+  --sky-loss-600:   #EC4242; /* rgb(236,66,66) — chip fill             */
+  --sky-loss-700:   #DE2020; /* rgb(222,32,32) — pressed / dark red    */
+
+  --sky-loss-bg:    #FEF3F2; /* rgb(254,243,242) — light loss-tag bg   */
+  --sky-warn-bg:    #FFFAEB; /* rgb(255,250,235) — warning tag bg      */
+  --sky-warn-text:  #272113; /* rgb(39,33,19)   — warning text         */
+
+  /* =================================================================
+     COLORS — Semantic aliases (theme-aware)
+     ================================================================= */
+  --fg-1: var(--sky-ink-900);   /* primary text          */
+  --fg-2: var(--sky-ink-600);   /* secondary text        */
+  --fg-3: var(--sky-ink-400);   /* tertiary / muted      */
+  --fg-disabled: var(--sky-ink-300);
+
+  --bg-app:    var(--sky-surface-1);
+  --bg-card:   var(--sky-surface-0);
+  --bg-select: var(--sky-surface-2);
+
+  --border-1: var(--sky-blue-100); /* default UI border */
+  --border-2: var(--sky-ink-200);  /* subtle row divider */
+
+  --accent:     var(--sky-blue-500);
+  --accent-soft:var(--sky-blue-50);
+
+  --profit: var(--sky-profit-500);
+  --loss:   var(--sky-loss-500);
+
+  /* =================================================================
+     SPACING (from sky-ds-poc tokens)
+     ================================================================= */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
+  /* =================================================================
+     RADIUS
+     ================================================================= */
+  --radius-xs: 2px;  /* section frames in figma */
+  --radius-sm: 4px;  /* tags, chips */
+  --radius-md: 6px;  /* search inputs, small buttons */
+  --radius-lg: 8px;  /* cards, primary buttons */
+  --radius-xl: 12px; /* large surfaces */
+  --radius-full: 9999px;
+
+  /* =================================================================
+     SHADOWS — very restrained; trading UIs are flat-borders-first
+     ================================================================= */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+  --shadow-pop: 0 8px 24px rgba(40,80,231,0.10); /* brand-tinted popovers */
+
+  /* =================================================================
+     TYPOGRAPHY — families
+     ================================================================= */
+  --font-display: "Inter Display Lg", "Inter", -apple-system, BlinkMacSystemFont, sans-serif; /* 28pt optical */
+  --font-ui:      "Inter", -apple-system, BlinkMacSystemFont, sans-serif;                       /* 18pt optical */
+  --font-num:     "Inter", -apple-system, BlinkMacSystemFont, sans-serif;                       /* tabular-nums */
+  --font-data:    "Inter", -apple-system, BlinkMacSystemFont, sans-serif;                       /* dense data */
+
+  /* =================================================================
+     TYPOGRAPHY — scale (from sky-ds-poc + Figma observed sizes)
+     The terminal UI is information-dense: 10/11/12/14 dominate.
+     18/24 reserved for headers and welcome screens.
+     ================================================================= */
+  --type-h1-size: 32px;  --type-h1-lh: 36px;  --type-h1-weight: 700;
+  --type-h2-size: 24px;  --type-h2-lh: 28px;  --type-h2-weight: 700;
+  --type-h3-size: 18px;  --type-h3-lh: 24px;  --type-h3-weight: 600;
+  --type-body-size: 14px; --type-body-lh: 20px; --type-body-weight: 400;
+  --type-label-size: 14px; --type-label-lh: 18px; --type-label-weight: 500;
+  --type-caption-size: 12px; --type-caption-lh: 16px;
+  --type-micro-size: 10px; --type-micro-lh: 14px;
+}
+
+/* ---------- Dark theme overrides ------------------------------------ */
+[data-theme="dark"], .theme-dark {
+  --fg-1: #FFFFFF;
+  --fg-2: var(--sky-ink-400);
+  --fg-3: #68697E;
+  --fg-disabled: #43457D;
+
+  --bg-app:    var(--sky-dark-bg);
+  --bg-card:   var(--sky-dark-card);
+  --bg-select: #11144A;
+
+  --border-1: var(--sky-dark-border);
+  --border-2: #1B1E48;
+
+  --accent:     var(--sky-blue-200);
+  --accent-soft:#11144A;
+}
+
+/* =====================================================================
+   SEMANTIC ELEMENT STYLES
+   Use these classes on raw HTML to inherit the SKY look.
+   ===================================================================== */
+.h1 {
+  font-family: var(--font-display);
+  font-size: var(--type-h1-size); line-height: var(--type-h1-lh);
+  font-weight: var(--type-h1-weight); letter-spacing: -0.4px;
+  color: var(--fg-1); margin: 0;
+}
+.h2 {
+  font-family: var(--font-display);
+  font-size: var(--type-h2-size); line-height: var(--type-h2-lh);
+  font-weight: var(--type-h2-weight); letter-spacing: -0.2px;
+  color: var(--fg-1); margin: 0;
+}
+.h3 {
+  font-family: var(--font-display);
+  font-size: var(--type-h3-size); line-height: var(--type-h3-lh);
+  font-weight: var(--type-h3-weight);
+  color: var(--fg-1); margin: 0;
+}
+.body, p {
+  font-family: var(--font-ui);
+  font-size: var(--type-body-size); line-height: var(--type-body-lh);
+  font-weight: var(--type-body-weight);
+  color: var(--fg-1); margin: 0;
+}
+.label {
+  font-family: var(--font-ui);
+  font-size: var(--type-label-size); line-height: var(--type-label-lh);
+  font-weight: var(--type-label-weight);
+  color: var(--fg-2);
+}
+.caption {
+  font-family: var(--font-data);
+  font-size: var(--type-caption-size); line-height: var(--type-caption-lh);
+  color: var(--fg-2);
+}
+.micro {
+  font-family: var(--font-data); font-weight: 700;
+  font-size: var(--type-micro-size); line-height: var(--type-micro-lh);
+  letter-spacing: 0.2px; text-transform: uppercase;
+}
+
+/* Numeric — tabular figures for prices / P&L */
+.num {
+  font-family: var(--font-num);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-1);
+}
+.num--profit { color: var(--profit); }
+.num--loss   { color: var(--loss); }
+
+/* Tag / chip primitives */
+.tag {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-data); font-weight: 700;
+  font-size: 10px; line-height: 11px; letter-spacing: 0.2px;
+  padding: 2px 4px; border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+.tag--loss { background: var(--sky-loss-bg);  color: var(--sky-loss-500); }
+.tag--warn { background: var(--sky-warn-bg);  color: var(--sky-warn-text); }
+.tag--profit { background: #ECFDF3; color: var(--sky-profit-500); }
+.tag--info { background: var(--sky-blue-50); color: var(--sky-blue-500); }
+
+/* Code / mono — rare in this product but defined for completeness */
+.code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px; line-height: 16px;
+  background: var(--bg-app); padding: 1px 4px; border-radius: var(--radius-xs);
+}

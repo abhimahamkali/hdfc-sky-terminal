@@ -1,0 +1,50 @@
+---
+description: HDFC SKY Terminal — global house rules. Always on.
+alwaysApply: true
+---
+
+# HDFC SKY Terminal — House Rules
+
+This is a widget-driven web trading terminal for HDFC SKY. The UI replicates the
+Figma file `Terminal_testing` (key `aBbKoxTExS6gt1ZTMYr42B`) 1:1 in production React.
+
+Stack: Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · Tailwind v4.
+Design system: HDFC SKY DS, in `design-system/hdfc-sky-design-system/`.
+
+## Source of truth
+- `widgets/_registry.ts` = available widgets. `screens/_registry.ts` = screen
+  composition. NEVER bypass the registries by hand-editing layout/page files.
+- The `.skills/*.md` files carry the full conventions. See @skills-index below.
+
+## Colors
+- One accent only: SKY blue `#2850E7` = `var(--accent)`. No teals/oranges/purples.
+- Green = up, red = down. No exceptions. `var(--profit)` / `var(--loss)`. Never decorative.
+- Cards are flat: `var(--bg-card)`, 1px `var(--border-1)`, 8px radius, NO shadow.
+  Shadows only on modals (`var(--shadow-md)`) and popovers (`var(--shadow-pop)`).
+- Tag fills are washed-out tints (e.g. `var(--sky-loss-bg)`), never saturated.
+
+## Code
+- CSS variables only — NEVER raw hex, never `text-gray-500`. See `app/globals.css`.
+- Tailwind is for LAYOUT utilities only (flex, grid, gap, spacing). Not colors/fonts.
+- Inline styles are fine inside widget innards (matches the Figma JSX). Don't convert
+  to Tailwind without a reason.
+- Theme-aware via CSS vars — they flip on `data-theme="dark"`. Don't branch on
+  `useTheme()` unless you genuinely need theme-conditional logic.
+
+## Type & numbers
+- One family: Inter (self-hosted). Dense sizing: 10/11/12/14px dominate; 18/24/28 for headers.
+- ALL numerics get `className="num"` (tabular figures so columns align).
+- Indian numbering: `1,44,000.00`, `14,34,535.75`. Never `144,000`.
+- `₹` symbol, no space for compact labels (`₹1.2L`). Change indicators paired:
+  `-30.55 (-0.12%)`.
+
+## Voice
+- Operator's voice: calm, terse, no marketing fluff.
+- No emoji. Ever. No exclamation marks.
+- Title Case for buttons/tabs. ALL CAPS for status chips (`EXPIRY TODAY`, `STRIKE`).
+
+## Workflow discipline
+- One change at a time. Don't bundle unrelated edits.
+- Don't import one widget into another — extract shared UI to `components/`.
+- Mock data lives in each widget's `hooks.ts`. Don't wire real data in this loop.
+- After any visual change: screenshot http://localhost:3000 and diff vs the Figma frame.

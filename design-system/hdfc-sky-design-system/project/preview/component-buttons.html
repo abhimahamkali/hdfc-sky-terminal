@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="../colors_and_type.css"><link rel="stylesheet" href="_shared.css">
+<style>
+  .btn { font-family: var(--font-ui); font-weight:500; font-size:14px; cursor:pointer; transition: opacity 120ms ease; }
+  .btn-primary { background:#2850E7; color:#fff; border:none; padding:12px 20px; border-radius:8px; }
+  .btn-primary:hover { opacity: .92; }
+  .btn-secondary { background:transparent; color:#2850E7; border:1px solid #2850E7; padding:11px 19px; border-radius:8px; }
+  .btn-ghost { background:transparent; color:#001B33; border:1px solid #DDE0F1; padding:11px 19px; border-radius:8px; }
+  .btn-disabled { background:#B3D1FF; color:#fff; border:none; padding:12px 20px; border-radius:8px; cursor:not-allowed; }
+  .btn-icon { background:transparent;border:1px solid #DDE0F1;border-radius:6px;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;color:#001B33;cursor:pointer }
+</style></head>
+<body><div class="ds-card">
+  <div class="ds-row">
+    <button class="btn btn-primary">Get Started</button>
+    <button class="btn btn-secondary">+ Widgets</button>
+    <button class="btn btn-ghost">Advanced</button>
+    <button class="btn btn-disabled" disabled>Disabled</button>
+    <button class="btn-icon">⋯</button>
+  </div>
+  <div class="meta">Primary = brand blue solid · Secondary = brand-blue outline · Ghost = neutral border · Disabled = lightened blue tint (#B3D1FF, from POC). Hover drops opacity to .92.</div>
+</div></body></html>

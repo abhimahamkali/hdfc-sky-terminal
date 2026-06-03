@@ -1,0 +1,25 @@
+---
+description: Index of the .skills/*.md playbooks — which to read for which task.
+alwaysApply: true
+---
+
+# Skill playbooks (read the matching one BEFORE acting)
+
+The `.skills/` folder holds the canonical recipes. Pull the relevant file into
+context before starting a task — they define folder layout, props, and conventions.
+
+| Task | Read this |
+|---|---|
+| Picking up the project / what to build next | @../../.skills/cursor-handoff.md |
+| Building OR modifying any widget | @../../.skills/widget-spec.md |
+| Porting a Figma frame into a new widget | @../../.skills/figma-to-widget.md |
+| Add / remove / modify a widget on a screen | @../../.skills/add-widget.md |
+| Per-layout Figma breakdown + node IDs | @../../figma-inventory.md |
+
+Current state (per cursor-handoff.md): Layout 1 is built and live. Layouts 2–6 are
+spec'd but not built. Priority order: (1) Add Widgets popover (Layouts 2+3),
+(2) screens registry refactor, (3) remaining widgets — straddle-chart, open-interest,
+chart-full, scanner, heatmap.
+
+Figma file: `Terminal_testing`, key `aBbKoxTExS6gt1ZTMYr42B`, page "Claude test" →
+section "Testing" → 6 layouts × 2 themes.
