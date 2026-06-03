@@ -76,12 +76,26 @@ git commit -m "Describe what you did"
 git push -u origin feat/my-widget # upload your branch to GitHub
 ```
 
-Then in the browser at the repo:
+> ⚠️ **IMPORTANT — pushing your branch does NOT update the live site.**
+> A branch push only creates a private *preview*. Your change goes live **only after it is
+> merged into `main`** (the step below). If the site didn't change, this is why.
+
+**To make it live — merge into `main`. Two ways:**
+
+**Option A — Pull Request (recommended for the team):** in the browser at the repo:
 1. Click **Compare & pull request** → **Create pull request**.
-2. A teammate reviews → clicks **Merge**.
+2. Review → click **Merge pull request**.
 3. Merging into `main` **auto-deploys** → your change is live on the main URL.
 
-> Tip: after it's live, hard-refresh the site with **Ctrl + Shift + R** (clears the browser cache).
+**Option B — Quick merge from the terminal (fine for the owner working solo):**
+```bash
+git checkout main
+git pull
+git merge feat/my-widget       # bring your branch into main
+git push origin main           # → auto-deploys to the live site
+```
+
+> Tip: after it's live, wait ~1 min then hard-refresh with **Ctrl + Shift + R** (clears the browser cache).
 
 ```
 edit on localhost (private)
