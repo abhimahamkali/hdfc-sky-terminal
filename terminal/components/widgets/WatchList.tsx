@@ -61,6 +61,7 @@ export function WatchList() {
               setExplore(false);
               setActive(n);
             }}
+            className="watchlist-tab-btn"
             style={{
               width: 28, height: 28, borderRadius: 6,
               border: active === n ? "1.5px solid var(--accent)" : "1px solid var(--border-1)",

@@ -1,66 +1,80 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { TopBar } from "@/components/shell/TopBar";
 import { AddWidgetsModal } from "@/components/shell/AddWidgetsModal";
 import { ToastStack } from "@/components/shell/ToastStack";
 import { RightFabStack } from "@/components/shell/RightFabStack";
 import { PreferencesModal } from "@/components/shell/PreferencesModal";
 import { GlobalSearchOverlay } from "@/components/shell/GlobalSearchOverlay";
+import {
+  MobileWorkspaceTabs,
+  type MobilePanel,
+} from "@/components/shell/MobileWorkspaceTabs";
 import { WatchList } from "@/components/widgets/WatchList";
 import { ChartPanel } from "@/components/widgets/ChartPanel";
 import { OptionChain } from "@/components/widgets/OptionChain";
 import { PositionsTable } from "@/components/widgets/PositionsTable";
+import { useMediaQuery } from "@/lib/use-media-query";
 import { UiShellProvider, useUiShell } from "@/lib/ui-shell";
 
 function TerminalLayout() {
-  const { watchlistCollapsed, tickersVisible } = useUiShell();
+  const { watchlistCollapsed } = useUiShell();
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [mobilePanel, setMobilePanel] = useState<MobilePanel>("chart");
+
+  useEffect(() => {
+    if (isMobile && mobilePanel === "watchlist" && watchlistCollapsed) {
+      setMobilePanel("chart");
+    }
+  }, [isMobile, watchlistCollapsed, mobilePanel]);
+
+  const gridClass = [
+    "terminal-grid",
+    watchlistCollapsed && !isMobile ? "terminal-grid--wl-collapsed" : "",
+    isMobile ? "terminal-grid--mobile" : "",
+    isMobile ? `terminal-grid--panel-${mobilePanel}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        padding: 16,
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        background: "var(--bg-app)",
-      }}
-    >
-      <TopBar showTickers={tickersVisible} />
+    <div className="terminal-root">
+      <TopBar showTickers={!isMobile} showCompactTickers={isMobile} />
 
-      <div
-        style={{
-          flex: 1,
-          display: "grid",
-          gridTemplateColumns: watchlistCollapsed
-            ? "1fr minmax(280px, 340px)"
-            : "minmax(280px, 320px) 1fr minmax(280px, 340px)",
-          gridTemplateRows: "1fr 360px",
-          gridTemplateAreas: watchlistCollapsed
-            ? `
-              "chart       optionchain"
-              "positions   optionchain"
-            `
-            : `
-              "watchlist chart       optionchain"
-              "positions positions   optionchain"
-            `,
-          gap: 8,
-          minHeight: 0,
-        }}
-      >
-        {!watchlistCollapsed && (
-          <div style={{ gridArea: "watchlist", minHeight: 0 }}>
+      {isMobile && (
+        <MobileWorkspaceTabs active={mobilePanel} onChange={setMobilePanel} />
+      )}
+
+      <div className={gridClass}>
+        {(!watchlistCollapsed || isMobile) && (
+          <div
+            data-panel="watchlist"
+            className={`terminal-panel${watchlistCollapsed && !isMobile ? " terminal-panel--hidden" : ""}`}
+            style={{ gridArea: "watchlist" }}
+          >
             <WatchList />
           </div>
         )}
-        <div style={{ gridArea: "chart", minHeight: 0 }}>
+        <div
+          data-panel="chart"
+          className="terminal-panel"
+          style={{ gridArea: "chart" }}
+        >
           <ChartPanel />
         </div>
-        <div style={{ gridArea: "optionchain", minHeight: 0 }}>
+        <div
+          data-panel="optionchain"
+          className="terminal-panel"
+          style={{ gridArea: "optionchain" }}
+        >
           <OptionChain />
         </div>
-        <div style={{ gridArea: "positions", minHeight: 0 }}>
+        <div
+          data-panel="positions"
+          className="terminal-panel"
+          style={{ gridArea: "positions" }}
+        >
           <PositionsTable />
         </div>
       </div>

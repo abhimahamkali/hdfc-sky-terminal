@@ -167,7 +167,7 @@ export function OptionChain() {
                 >
                   <InfoCircleGlyph /> LONG BUILDUP
                 </span>
-                <span className="num" style={{ fontSize: 12 }}>
+                <span className="num" style={{ fontSize: 12, color: "var(--fg-1)" }}>
                   1,274.75
                 </span>
               </div>
@@ -180,22 +180,10 @@ export function OptionChain() {
 }
 
 function Cell({ side, v1, v2 }: { side: "call" | "strike" | "put"; v1: string; v2: string }) {
-  let bg = "transparent";
-  if (side === "call") bg = "var(--oc-call-bg)";
-  if (side === "strike") bg = "var(--oc-strike-bg)";
-  if (side === "put") bg = "var(--oc-put-bg)";
   return (
-    <div
-      style={{
-        background: bg,
-        borderRadius: 4,
-        padding: "6px 8px",
-        textAlign: "center",
-      }}
-      className="num"
-    >
-      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--fg-1)" }}>{v1}</div>
-      <div style={{ fontSize: 10, color: "var(--fg-2)" }}>{v2}</div>
+    <div className={`oc-cell oc-cell--${side}`}>
+      <div className="oc-cell__primary">{v1}</div>
+      <div className="oc-cell__secondary">{v2}</div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./terminal.css";
 import "./add-widgets.css";
 import "./preferences.css";
 import "./global-search.css";
@@ -8,6 +9,12 @@ import { ThemeProvider } from "@/lib/theme";
 export const metadata: Metadata = {
   title: "HDFC SKY · Terminal",
   description: "HDFC SKY trading terminal",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 const themeInitScript = `

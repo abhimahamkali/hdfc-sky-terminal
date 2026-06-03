@@ -21,7 +21,13 @@ const TICKERS: Ticker[] = [
 
 const TRADE_OPTIONS = ["Trade", "Equity", "F&O", "Commodities", "Currency"];
 
-export function TopBar({ showTickers }: { showTickers: boolean }) {
+export function TopBar({
+  showTickers = true,
+  showCompactTickers = false,
+}: {
+  showTickers?: boolean;
+  showCompactTickers?: boolean;
+}) {
   const {
     openWidgets,
     tradeOpen,
@@ -34,6 +40,9 @@ export function TopBar({ showTickers }: { showTickers: boolean }) {
   } = useUiShell();
 
   const tradeRef = useRef<HTMLDivElement>(null);
+  const displayTickers = showTickers;
+  const compactOnly = showCompactTickers && !showTickers;
+  const tickersToShow = compactOnly ? TICKERS.slice(0, 1) : TICKERS;
 
   useEffect(() => {
     if (!tradeOpen) return;
@@ -47,39 +56,14 @@ export function TopBar({ showTickers }: { showTickers: boolean }) {
   }, [tradeOpen, setTradeOpen]);
 
   return (
-    <div
-      className="sky-card"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 16,
-        padding: "12px 16px",
-        position: "relative",
-        zIndex: 10,
-      }}
-    >
-      <div ref={tradeRef} style={{ position: "relative" }}>
+    <div className="sky-card top-bar">
+      <div ref={tradeRef} className="top-bar__trade">
         <button
           type="button"
+          className="top-bar__trade-btn"
           aria-expanded={tradeOpen}
           aria-haspopup="listbox"
           onClick={() => setTradeOpen(!tradeOpen)}
-          style={{
-            height: 44,
-            padding: "8px 14px",
-            minWidth: 200,
-            background: tradeOpen ? "var(--accent-soft)" : "transparent",
-            border: `1px solid ${tradeOpen ? "var(--accent)" : "var(--border-1)"}`,
-            borderRadius: 8,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            fontFamily: "var(--font-ui)",
-            fontWeight: 500,
-            fontSize: 14,
-            color: "var(--fg-1)",
-          }}
         >
           {tradeMode} <Chevron />
         </button>
@@ -90,6 +74,7 @@ export function TopBar({ showTickers }: { showTickers: boolean }) {
               position: "absolute",
               top: "calc(100% + 4px)",
               left: 0,
+              right: 0,
               minWidth: 200,
               margin: 0,
               padding: 4,
@@ -131,36 +116,45 @@ export function TopBar({ showTickers }: { showTickers: boolean }) {
         )}
       </div>
 
-      {showTickers && (
-        <div style={{ display: "flex", alignItems: "center", gap: 20, flex: 1, overflow: "hidden" }}>
-          {TICKERS.map((t, i) => (
-            <div key={t.name} style={{ display: "flex", alignItems: "center", gap: 20 }}>
-              <button
-                type="button"
-                onClick={() => showToast(`${t.name}: ${t.value} ${t.delta}`)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  border: "none",
-                  background: "transparent",
-                  cursor: "pointer",
-                  padding: 0,
-                }}
-              >
-                <Ticker {...t} />
-              </button>
-              {i < TICKERS.length - 1 && (
-                <div style={{ width: 1, height: 18, background: "var(--border-1)" }} />
-              )}
-            </div>
-          ))}
+      {(displayTickers || compactOnly) && (
+        <div className="top-bar__tickers">
+          <div className="top-bar__ticker-scroll">
+            {tickersToShow.map((t, i) => (
+              <div key={t.name} style={{ display: "flex", alignItems: "center", gap: 20 }}>
+                <button
+                  type="button"
+                  onClick={() => showToast(`${t.name}: ${t.value} ${t.delta}`)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    padding: "4px 0",
+                    minHeight: 44,
+                  }}
+                >
+                  <Ticker {...t} compact={compactOnly} />
+                </button>
+                {!compactOnly && i < tickersToShow.length - 1 && (
+                  <div style={{ width: 1, height: 18, background: "var(--border-1)", flexShrink: 0 }} />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
-      {!showTickers && <div style={{ flex: 1 }} />}
 
-      <div style={{ display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
-        <span style={{ fontFamily: "var(--font-data)", fontSize: 12, color: "var(--fg-2)" }}>Avlb Mar:</span>
+      {!displayTickers && !compactOnly && <div style={{ flex: 1, minWidth: 0 }} />}
+
+      <div className="top-bar__actions">
+        <span
+          className="top-bar__margin-label"
+          style={{ fontFamily: "var(--font-data)", fontSize: 12, color: "var(--fg-2)" }}
+        >
+          Avlb Mar:
+        </span>
         <span className="num" style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)" }}>
           ₹1.2L
         </span>
@@ -171,7 +165,8 @@ export function TopBar({ showTickers }: { showTickers: boolean }) {
             display: "flex",
             alignItems: "center",
             gap: 4,
-            padding: "4px 8px",
+            padding: "8px 10px",
+            minHeight: 44,
             background: "transparent",
             border: "none",
             cursor: "pointer",
@@ -180,89 +175,75 @@ export function TopBar({ showTickers }: { showTickers: boolean }) {
             color: "var(--accent)",
           }}
         >
-          + AddFunds
+          + Add Funds
+        </button>
+        <button type="button" onClick={openWidgets} className="top-bar__widgets-btn">
+          <span className="top-bar__widgets-label--long">+ Widgets</span>
+          <span aria-hidden className="top-bar__widgets-label--short" style={{ display: "none" }}>
+            +
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => showToast("Layout presets — coming soon")}
+          title="Layout"
+          aria-label="Layout"
+          className="top-bar__icon-btn"
+        >
+          <LayoutIcon />
+        </button>
+        <button
+          type="button"
+          onClick={toggleWatchlist}
+          title={watchlistCollapsed ? "Show watchlist" : "Hide watchlist"}
+          aria-label={watchlistCollapsed ? "Show watchlist" : "Hide watchlist"}
+          aria-pressed={!watchlistCollapsed}
+          className={`top-bar__icon-btn${watchlistCollapsed ? "" : " top-bar__icon-btn--active"}`}
+        >
+          <PanelIcon />
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            showToast("Help — shortcuts: Esc closes modals; click tickers for quotes")
+          }
+          className="top-bar__icon-btn top-bar__icon-btn--plain"
+          aria-label="Help"
+        >
+          <HelpIcon />
         </button>
       </div>
-
-      <button
-        type="button"
-        onClick={openWidgets}
-        style={{
-          padding: "8px 12px",
-          height: 36,
-          border: "1px solid var(--accent)",
-          borderRadius: 8,
-          background: "transparent",
-          color: "var(--accent)",
-          fontSize: 13,
-          fontWeight: 500,
-          cursor: "pointer",
-          whiteSpace: "nowrap",
-        }}
-      >
-        + Widgets
-      </button>
-
-      <button
-        type="button"
-        onClick={() => showToast("Layout presets — coming soon")}
-        title="Layout"
-        aria-label="Layout"
-        style={iconBtnBox}
-      >
-        <LayoutIcon />
-      </button>
-      <button
-        type="button"
-        onClick={toggleWatchlist}
-        title={watchlistCollapsed ? "Show watchlist" : "Hide watchlist"}
-        aria-label={watchlistCollapsed ? "Show watchlist" : "Hide watchlist"}
-        aria-pressed={!watchlistCollapsed}
-        style={{
-          ...iconBtnBox,
-          background: watchlistCollapsed ? "transparent" : "var(--accent-soft)",
-          borderColor: watchlistCollapsed ? "var(--border-1)" : "var(--accent)",
-          color: watchlistCollapsed ? "var(--fg-1)" : "var(--accent)",
-        }}
-      >
-        <PanelIcon />
-      </button>
-      <button
-        type="button"
-        onClick={() =>
-          showToast("Help — shortcuts: Esc closes modals; click tickers for quotes")
-        }
-        style={{ ...iconBtnBox, border: "none" }}
-        aria-label="Help"
-      >
-        <HelpIcon />
-      </button>
     </div>
   );
 }
 
-const iconBtnBox: React.CSSProperties = {
-  width: 36,
-  height: 36,
-  borderRadius: 8,
-  border: "1px solid var(--border-1)",
-  background: "transparent",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "var(--fg-1)",
-};
-
-function Ticker({ name, value, delta, dir, tag }: Ticker) {
+function Ticker({
+  name,
+  value,
+  delta,
+  dir,
+  tag,
+  compact,
+}: Ticker & { compact?: boolean }) {
   const cls = dir === "up" ? "num--profit" : "num--loss";
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, whiteSpace: "nowrap", fontSize: 12 }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        whiteSpace: "nowrap",
+        fontSize: 12,
+        flexWrap: compact ? "wrap" : "nowrap",
+      }}
+    >
       <span style={{ fontWeight: 500, color: "var(--fg-1)" }}>{name}</span>
-      <span className="num" style={{ fontWeight: 600 }}>{value}</span>
+      <span className="num" style={{ fontWeight: 600 }}>
+        {value}
+      </span>
       <Arrow dir={dir} />
       <span className={`num ${cls}`}>{delta}</span>
-      {tag && <span className="tag tag--loss">{tag}</span>}
+      {tag && !compact && <span className="tag tag--loss">{tag}</span>}
     </div>
   );
 }

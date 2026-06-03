@@ -209,7 +209,17 @@ export function ChartPanel() {
         </>
       )}
 
-      <div style={{ flex: 1, position: "relative", minHeight: 0, overflow: "auto" }}>
+      <div
+        style={{
+          flex: 1,
+          position: "relative",
+          minHeight: 0,
+          minWidth: 0,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {active === "Charts" && <Candles candles={candles} />}
         {active === "Notes" && (
           <TabPlaceholder
@@ -233,21 +243,21 @@ export function ChartPanel() {
       </div>
 
       {showChartChrome && (
-        <div style={{ display: "flex", justifyContent: "center", gap: 20, flexShrink: 0 }}>
+        <div className="chart-timeframes">
           {TIMEFRAMES.map((tf) => (
             <button
               key={tf}
               type="button"
+              className="chart-timeframes__btn"
               onClick={() => setTimeframe(tf)}
               style={{
                 background: timeframe === tf ? "var(--accent-soft)" : "transparent",
-                border: timeframe === tf ? "1px solid var(--accent)" : "none",
+                border: timeframe === tf ? "1px solid var(--accent)" : "1px solid transparent",
                 borderRadius: 4,
                 cursor: "pointer",
                 fontSize: 12,
                 fontWeight: timeframe === tf ? 600 : 500,
                 color: timeframe === tf ? "var(--accent)" : "var(--fg-2)",
-                padding: "4px 8px",
               }}
             >
               {tf}
@@ -339,10 +349,11 @@ function Candles({ candles }: { candles: Candle[] }) {
   const cw = w / n - 2;
 
   return (
+    <div className="chart-canvas">
     <svg
       viewBox={`0 0 ${w} ${h}`}
-      preserveAspectRatio="none"
-      style={{ width: "100%", height: "100%", display: "block", minHeight: 280 }}
+      preserveAspectRatio="xMidYMid meet"
+      className="chart-canvas__svg"
     >
       {[0.2, 0.4, 0.6, 0.8].map((y) => (
         <line
@@ -413,5 +424,6 @@ function Candles({ candles }: { candles: Candle[] }) {
         {formatPrice(last.close)}
       </text>
     </svg>
+    </div>
   );
 }
