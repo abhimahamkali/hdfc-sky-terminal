@@ -85,6 +85,12 @@ git push -u origin feat/short-description
 ### Branch names
 `feat/...` new feature · `fix/...` bug fix · `chore/...` tooling/docs. Keep them short and kebab-case.
 
+### Shortcut for the owner: `ship`
+The repo owner working solo can skip the branch/PR steps with the `ship` command — run
+`.\ship` in PowerShell, answer "what did you change?", and it commits + merges to `main` +
+pushes (auto-deploys to live). Colleagues should **not** use this — always use the branch →
+PR flow above so changes are reviewed.
+
 ---
 
 ## What "live" vs "preview" means

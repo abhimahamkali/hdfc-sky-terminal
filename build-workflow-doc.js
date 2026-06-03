@@ -122,18 +122,37 @@ children.push(body([text("Make your change — by hand in the editor, or by aski
 children.push(body([new TextRun({ text: "As you save, http://localhost:3000 refreshes instantly", font: "Calibri", size: 22, bold: true, color: INK }), text(" and shows your change. This is private to your laptop until you push. Iterate until you are happy.")]));
 
 // 4
-children.push(h1("4.  Save & share (commit → push → PR → live)"));
+children.push(h1("4.  Save & go live"));
+
+// Easiest way: the ship command
+children.push(h2("The easy way (owner): the “ship” command"));
+children.push(body([text("When you are happy with localhost, open PowerShell in the project folder and run:")]));
+children.push(...code([
+  "cd C:\\Users\\Admin\\Downloads\\Terminal-Project",
+  ".\\ship",
+]));
+children.push(body([text("It asks “What did you change?”, then does everything — stages your changes, commits, merges into main, and pushes. Your change is live in about a minute. One word replaces all the git commands below.")]));
+
+children.push(h2("The manual way (and what every colleague should do)"));
 children.push(body([text("When the change looks right:")]));
 children.push(...code([
   "git add -A                        # -A = gather ALL your changed files",
   'git commit -m "Describe what you did"',
   "git push -u origin feat/my-widget # upload your branch to GitHub",
 ]));
-children.push(body([text("Then in the browser, on the repository page:")]));
-children.push(numbered([new TextRun({ text: "Click ", font: "Calibri", size: 22, color: INK }), new TextRun({ text: "Compare & pull request", font: "Calibri", size: 22, bold: true, color: INK }), new TextRun({ text: ", then ", font: "Calibri", size: 22, color: INK }), new TextRun({ text: "Create pull request", font: "Calibri", size: 22, bold: true, color: INK }), new TextRun({ text: ".", font: "Calibri", size: 22, color: INK })]));
-children.push(numbered([new TextRun({ text: "A teammate reviews, then clicks ", font: "Calibri", size: 22, color: INK }), new TextRun({ text: "Merge", font: "Calibri", size: 22, bold: true, color: INK }), new TextRun({ text: ".", font: "Calibri", size: 22, color: INK })]));
-children.push(numbered([new TextRun({ text: "Merging into main auto-deploys — your change goes live on the main URL.", font: "Calibri", size: 22, color: INK })]));
-children.push(body([new TextRun({ text: "Tip: ", font: "Calibri", size: 22, bold: true, color: INK }), text("after it is live, hard-refresh the site with Ctrl + Shift + R to clear the browser cache.", { italics: true, color: MUTED })]));
+children.push(body([new TextRun({ text: "IMPORTANT — pushing your branch does NOT update the live site.", font: "Calibri", size: 22, bold: true, color: "C0392B" }), text(" A branch push only creates a private preview. Your change goes live ONLY after it is merged into main (below). If the site did not change, this is why.")]));
+children.push(body([new TextRun({ text: "To make it live, merge into main — two ways:", font: "Calibri", size: 22, bold: true, color: INK })], { spacing: { before: 100, after: 60 } }));
+children.push(body([new TextRun({ text: "Option A — Pull Request (recommended for the team).", font: "Calibri", size: 22, bold: true, color: INK }), text(" In the browser on the repository page:")]));
+children.push(numbered([new TextRun({ text: "Click ", font: "Calibri", size: 22, color: INK }), new TextRun({ text: "Compare & pull request", font: "Calibri", size: 22, bold: true, color: INK }), new TextRun({ text: ", then ", font: "Calibri", size: 22, color: INK }), new TextRun({ text: "Create pull request", font: "Calibri", size: 22, bold: true, color: INK }), new TextRun({ text: ".", font: "Calibri", size: 22, color: INK })], "prsteps"));
+children.push(numbered([new TextRun({ text: "Review, then click ", font: "Calibri", size: 22, color: INK }), new TextRun({ text: "Merge pull request", font: "Calibri", size: 22, bold: true, color: INK }), new TextRun({ text: " — this auto-deploys to live.", font: "Calibri", size: 22, color: INK })], "prsteps"));
+children.push(body([new TextRun({ text: "Option B — Quick merge from the terminal (fine for the owner working solo):", font: "Calibri", size: 22, bold: true, color: INK })], { spacing: { before: 100, after: 60 } }));
+children.push(...code([
+  "git checkout main",
+  "git pull",
+  "git merge feat/my-widget       # bring your branch into main",
+  "git push origin main           # -> auto-deploys to the live site",
+]));
+children.push(body([new TextRun({ text: "Tip: ", font: "Calibri", size: 22, bold: true, color: INK }), text("after it is live, wait about a minute then hard-refresh with Ctrl + Shift + R to clear the browser cache.", { italics: true, color: MUTED })]));
 
 // 5
 children.push(h1("5.  Take a widget's design INTO Figma (code → Figma)"));
@@ -183,6 +202,7 @@ const doc = new Document({
     config: [
       { reference: "bullets", levels: [{ level: 0, format: LevelFormat.BULLET, text: "•", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 480, hanging: 240 } } } }] },
       { reference: "steps", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 480, hanging: 240 } } } }] },
+      { reference: "prsteps", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 480, hanging: 240 } } } }] },
       { reference: "steps5", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 480, hanging: 240 } } } }] },
       { reference: "steps5b", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 480, hanging: 240 } } } }] },
     ],

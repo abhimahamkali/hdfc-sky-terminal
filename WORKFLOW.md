@@ -67,7 +67,22 @@ This is private to your laptop until you push. Iterate until you're happy.
 
 ---
 
-## 4. Save & share (commit → push → PR → live)
+## 4. Save & go live
+
+### The easy way (owner): the `ship` command
+
+When you're happy on localhost, open PowerShell in the project folder and run:
+```powershell
+cd C:\Users\Admin\Downloads\Terminal-Project
+.\ship
+```
+It asks **"What did you change?"**, then does everything — stages, commits, merges into
+`main`, and pushes. Live in ~1 minute. One word replaces all the git commands below.
+
+> `ship` is the owner's express lane. Colleagues should use the manual branch → PR flow below
+> so changes get reviewed.
+
+### The manual way (and what every colleague should do)
 
 When the change looks right:
 ```bash
