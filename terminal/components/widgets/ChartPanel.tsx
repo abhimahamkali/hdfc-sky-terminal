@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useUiShell } from "@/lib/ui-shell";
 import { ResearchPanel } from "@/components/widgets/ResearchPanel";
 
@@ -14,12 +14,82 @@ const TABS = [
 
 type Tab = (typeof TABS)[number];
 
-const TIMEFRAMES = ["1D", "5D", "1M", "3M", "6M", "1Y", "5Y"];
+const TIMEFRAMES = ["1D", "5D", "1M", "3M", "6M", "1Y", "5Y"] as const;
+type Timeframe = (typeof TIMEFRAMES)[number];
+
+type Candle = { open: number; close: number; high: number; low: number };
+
+const TIMEFRAME_CONFIG: Record<
+  Timeframe,
+  { bars: number; volatility: number; seed: number; trend: number }
+> = {
+  "1D": { bars: 78, volatility: 28, seed: 42, trend: -0.02 },
+  "5D": { bars: 65, volatility: 45, seed: 142, trend: -0.08 },
+  "1M": { bars: 52, volatility: 65, seed: 242, trend: 0.04 },
+  "3M": { bars: 48, volatility: 90, seed: 342, trend: -0.12 },
+  "6M": { bars: 44, volatility: 110, seed: 442, trend: 0.1 },
+  "1Y": { bars: 40, volatility: 140, seed: 542, trend: 0.18 },
+  "5Y": { bars: 36, volatility: 200, seed: 642, trend: 0.25 },
+};
+
+function mulberry32(seed: number) {
+  return () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+}
+
+function generateSeries(timeframe: Timeframe): Candle[] {
+  const cfg = TIMEFRAME_CONFIG[timeframe];
+  const rand = mulberry32(cfg.seed);
+  const candles: Candle[] = [];
+  let price = 24080;
+
+  for (let i = 0; i < cfg.bars; i++) {
+    const drift = (rand() - 0.48 + cfg.trend) * cfg.volatility;
+    const open = price;
+    const close = Math.max(22800, Math.min(25200, open + drift));
+    const wick = rand() * cfg.volatility * 0.45;
+    const high = Math.max(open, close) + wick;
+    const low = Math.min(open, close) - wick;
+    candles.push({ open, close, high, low });
+    price = close;
+  }
+
+  return candles;
+}
+
+function formatPrice(n: number) {
+  return n.toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function seriesStats(candles: Candle[]) {
+  const first = candles[0];
+  const last = candles[candles.length - 1];
+  const high = Math.max(...candles.map((c) => c.high));
+  const low = Math.min(...candles.map((c) => c.low));
+  const change = last.close - first.open;
+  const pct = (change / first.open) * 100;
+  return {
+    open: first.open,
+    high,
+    low,
+    close: last.close,
+    change,
+    pct,
+  };
+}
 
 export function ChartPanel() {
   const { showToast } = useUiShell();
   const [active, setActive] = useState<Tab>("Charts");
-  const [timeframe, setTimeframe] = useState("1D");
+  const [timeframe, setTimeframe] = useState<Timeframe>("1D");
+
+  const candles = useMemo(() => generateSeries(timeframe), [timeframe]);
+  const stats = useMemo(() => seriesStats(candles), [candles]);
 
   const showChartChrome = active === "Charts";
   const showResearch =
@@ -93,7 +163,7 @@ export function ChartPanel() {
               NIFTY 50 · INDICES
             </span>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ fontSize: 12, color: "var(--fg-2)" }}>1D</span>
+              <span style={{ fontSize: 12, color: "var(--fg-2)" }}>{timeframe}</span>
               <span className="num" style={{ fontSize: 12 }}>
                 ƒ×
               </span>
@@ -120,21 +190,27 @@ export function ChartPanel() {
           </div>
 
           <div style={{ display: "flex", gap: 16, fontSize: 12 }} className="num">
-            <Quote label="O" value="23,880.35" />
-            <Quote label="H" value="23,976.40" />
-            <Quote label="L" value="23,868.50" />
-            <Quote label="C" value="23,965.95" />
+            <Quote label="O" value={formatPrice(stats.open)} />
+            <Quote label="H" value={formatPrice(stats.high)} />
+            <Quote label="L" value={formatPrice(stats.low)} />
+            <Quote label="C" value={formatPrice(stats.close)} />
             <span
-              style={{ color: "var(--profit)", fontWeight: 600, marginLeft: 8 }}
+              style={{
+                color: stats.change >= 0 ? "var(--profit)" : "var(--loss)",
+                fontWeight: 600,
+                marginLeft: 8,
+              }}
             >
-              +52.25 (+0.22%)
+              {stats.change >= 0 ? "+" : ""}
+              {formatPrice(stats.change)} ({stats.pct >= 0 ? "+" : ""}
+              {stats.pct.toFixed(2)}%)
             </span>
           </div>
         </>
       )}
 
       <div style={{ flex: 1, position: "relative", minHeight: 0, overflow: "auto" }}>
-        {active === "Charts" && <Candles />}
+        {active === "Charts" && <Candles candles={candles} />}
         {active === "Notes" && (
           <TabPlaceholder
             title="Notes"
@@ -243,30 +319,24 @@ function Arrow({ dir }: { dir: "up" | "down" }) {
   );
 }
 
-function Candles() {
-  const w = 800,
-    h = 320,
-    n = 80;
-  let seed = 42;
-  const rand = () => {
-    seed = (seed * 9301 + 49297) % 233280;
-    return seed / 233280;
-  };
+function Candles({ candles }: { candles: Candle[] }) {
+  const w = 800;
+  const h = 320;
+  const pad = 24;
+  const n = candles.length;
 
-  type Candle = { open: number; close: number; high: number; low: number };
-  const candles: Candle[] = [];
-  let prev = h * 0.45;
-  for (let i = 0; i < n; i++) {
-    const drift = (rand() - 0.5) * 18;
-    const open = prev;
-    const close = Math.max(60, Math.min(h - 60, prev + drift));
-    const high = Math.min(open, close) - rand() * 12 - 2;
-    const low = Math.max(open, close) + rand() * 12 + 2;
-    candles.push({ open, close, high, low });
-    prev = close;
-  }
+  const priceMin = Math.min(...candles.map((c) => c.low));
+  const priceMax = Math.max(...candles.map((c) => c.high));
+  const span = priceMax - priceMin || 1;
+
+  const toY = (price: number) =>
+    pad + ((priceMax - price) / span) * (h - pad * 2);
+
+  const last = candles[n - 1];
+  const lastY = toY(last.close);
+  const up = last.close >= candles[0].open;
+  const markerColor = up ? "var(--profit)" : "var(--loss)";
   const cw = w / n - 2;
-  const last = candles[candles.length - 1];
 
   return (
     <svg
@@ -286,18 +356,22 @@ function Candles() {
         />
       ))}
       {candles.map((c, i) => {
-        const up = c.close <= c.open;
-        const color = up ? "var(--profit)" : "var(--loss)";
+        const bullish = c.close >= c.open;
+        const color = bullish ? "var(--profit)" : "var(--loss)";
         const x = i * (w / n) + 1;
-        const top = Math.min(c.open, c.close);
-        const bot = Math.max(c.open, c.close);
+        const openY = toY(c.open);
+        const closeY = toY(c.close);
+        const highY = toY(c.high);
+        const lowY = toY(c.low);
+        const top = Math.min(openY, closeY);
+        const bot = Math.max(openY, closeY);
         return (
           <g key={i}>
             <line
               x1={x + cw / 2}
               x2={x + cw / 2}
-              y1={c.high}
-              y2={c.low}
+              y1={highY}
+              y2={lowY}
               stroke={color}
               strokeWidth="1"
             />
@@ -314,23 +388,29 @@ function Candles() {
       <line
         x1={0}
         x2={w}
-        y1={last.close}
-        y2={last.close}
-        stroke="var(--profit)"
+        y1={lastY}
+        y2={lastY}
+        stroke={markerColor}
         strokeWidth="1"
         strokeDasharray="3 3"
         opacity="0.7"
       />
-      <rect x={w - 60} y={last.close - 10} width="60" height="20" fill="var(--profit)" />
+      <rect
+        x={w - 72}
+        y={lastY - 10}
+        width="72"
+        height="20"
+        fill={markerColor}
+      />
       <text
-        x={w - 30}
-        y={last.close + 4}
+        x={w - 36}
+        y={lastY + 4}
         fill="white"
         fontSize="11"
         textAnchor="middle"
         fontFamily="Inter"
       >
-        23965.95
+        {formatPrice(last.close)}
       </text>
     </svg>
   );
