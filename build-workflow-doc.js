@@ -106,6 +106,18 @@ children.push(...code([
 ]));
 children.push(body([text("Open "), new TextRun({ text: "http://localhost:3000", font: "Consolas", size: 20, color: "1B1E48" }), text(" — you should see the terminal. Leave npm run dev running.")]));
 children.push(body([new TextRun({ text: "Tip: ", font: "Calibri", size: 22, bold: true, color: INK }), text("npm run dev runs forever on purpose — it keeps your local site alive and never says “done”. That is normal, not stuck. Open a second terminal tab for git commands.", { italics: true, color: MUTED })]));
+children.push(h2("Starting the server again later"));
+children.push(body([text("In PowerShell, from the project’s terminal/ folder:")]));
+children.push(...code([
+  "cd C:\\Users\\Admin\\Downloads\\Terminal-Project\\terminal",
+  "npm run dev",
+]));
+children.push(h2("“Port 3000 is in use” / “Another next dev server is already running”"));
+children.push(body([text("This means a dev server is already running (often a leftover one). Either:")]));
+children.push(bullet([text("Use the port it picked instead (e.g. it will say http://localhost:3001), or")]));
+children.push(bullet([text("Free up port 3000 by stopping the old server. PowerShell prints the PID — stop it with the command below, then run npm run dev again.")]));
+children.push(...code(["taskkill /PID <the-PID-it-printed> /F"]));
+children.push(body([new TextRun({ text: "You only ever need one dev server running.", font: "Calibri", size: 22, italics: true, color: MUTED })]));
 
 // 2
 children.push(h1("2.  Start a piece of work (your own branch)"));

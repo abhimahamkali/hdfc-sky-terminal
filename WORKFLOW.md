@@ -43,6 +43,24 @@ Open **http://localhost:3000** — you should see the terminal. Leave `npm run d
 > `npm run dev` runs forever on purpose — it keeps your local site alive. It never says
 > "done." That's normal, not stuck. Open a **second** terminal tab for git commands.
 
+### Starting the server again later
+
+In PowerShell, from the project's `terminal/` folder:
+```powershell
+cd C:\Users\Admin\Downloads\Terminal-Project\terminal
+npm run dev
+```
+
+### "Port 3000 is in use" / "Another next dev server is already running"
+
+This means a dev server is **already running** (often a leftover one). You have two options:
+- Just use the port it picked instead (e.g. it'll say `http://localhost:3001`), **or**
+- Free up port 3000 by stopping the old server. PowerShell prints the PID — stop it with:
+```powershell
+taskkill /PID <the-PID-it-printed> /F
+```
+Then run `npm run dev` again and it will use 3000. You only ever need **one** dev server running.
+
 ---
 
 ## 2. Start a piece of work (your own branch)
